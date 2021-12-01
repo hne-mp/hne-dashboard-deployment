@@ -1,0 +1,21 @@
+server {
+   listen 443 ssl;
+   server_name dash.hne.to;
+
+   root /var/www/err/;
+   index index.html index.htm;
+
+   ssl on;
+   ssl_certificate /etc/nginx/ssl/dash.hne.to/fullchain.pem;
+   ssl_certificate_key /etc/nginx/ssl/dash.hne.to/privkey.pem;
+
+   client_max_body_size 10M;
+
+       location / {
+       proxy_pass http://localhost:5001;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header Host $http_host;
+       proxy_set_header X-Forwarded-Proto $scheme;
+       proxy_buffering off;
+   }
+}

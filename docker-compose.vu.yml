@@ -1,0 +1,43 @@
+---
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=hne_sync
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=passw0rd
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./postgre_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 5001:3000
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=passw0rd
+      - GF_USERS_DEFAULT_THEME=dark
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_ALLOW_ORG_CREATE=false
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+  nginx:
+    build: nginx
+    volumes:
+      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./nginx/ssl:/etc/nginx/ssl
+    ports:
+      - 80:80
+      - 443:443

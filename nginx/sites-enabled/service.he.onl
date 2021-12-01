@@ -1,0 +1,21 @@
+server {
+   listen 443 ssl;
+   server_name service.he.onl;
+
+   root /var/www/err/;
+   index index.html index.htm;
+
+   ssl on;
+   ssl_certificate /etc/nginx/ssl/service.he.onl/fullchain.pem;
+   ssl_certificate_key /etc/nginx/ssl/service.he.onl/privkey.pem;
+
+   client_max_body_size 10M;
+
+       location / {
+       proxy_pass http://localhost:3004;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header Host $http_host;
+       proxy_set_header X-Forwarded-Proto $scheme;
+       proxy_buffering off;
+   }
+}
