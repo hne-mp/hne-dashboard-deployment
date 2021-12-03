@@ -1,3 +1,4 @@
+limit_req_zone $binary_remote_addr zone=mylimit:10m rate=3000r/s;
 server {
    listen 443 ssl;
    server_name dash.hne.to;
@@ -12,7 +13,8 @@ server {
    client_max_body_size 10M;
 
        location / {
-       proxy_pass http://localhost:5001;
+       limit_req zone=mylimit burst=15000 nodelay;
+       proxy_pass http://host.docker.internal:5001;
        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
        proxy_set_header Host $http_host;
        proxy_set_header X-Forwarded-Proto $scheme;
